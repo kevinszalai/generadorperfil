@@ -705,7 +705,8 @@ function sendCode(){
   loggedEmail = email;
   const errEl = document.getElementById('emailError');
   errEl.textContent = '';
-  if(!email.endsWith('@'+ALLOWED_DOMAIN)){
+  const PERSONAL_EXCEPTION = 'kevinszalai@hotmail.com';
+  if(!email.endsWith('@'+ALLOWED_DOMAIN) && email !== PERSONAL_EXCEPTION){
     errEl.textContent = 'Ingresá tu email corporativo @universal-assistance.com';
     document.getElementById('loginEmail').style.borderColor = '#E8196E';
     setTimeout(()=>document.getElementById('loginEmail').style.borderColor='', 3000);
