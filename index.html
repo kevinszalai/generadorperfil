@@ -716,9 +716,14 @@ function sendCode(){
   btn.disabled = true; btn.textContent = 'Enviando...';
   currentCode = Math.floor(100000 + Math.random() * 900000).toString();
   codeExpiry = Date.now() + 10 * 60 * 1000;
+  // Extract first name from email (e.g. kevin.szalai@... -> Kevin)
+  var namePart = email.split('@')[0].split('.')[0];
+  var firstName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+
   emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
     email: email,
-    passcode: currentCode
+    passcode: currentCode,
+    name: firstName
   }).then(function(){
     document.getElementById('stepEmail').style.display = 'none';
     document.getElementById('stepCode').style.display = 'block';
