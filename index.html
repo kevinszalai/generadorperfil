@@ -94,6 +94,21 @@ textarea{resize:none}
 .login-btn:disabled{background:#ccc;cursor:not-allowed}
 .login-error{font-size:13px;color:#E8196E;font-weight:600;margin-top:4px;min-height:18px}
 .login-step{transition:opacity .3s}
+.admin-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:50000;align-items:center;justify-content:center}
+.admin-overlay.open{display:flex}
+.admin-box{background:white;border-radius:16px;padding:32px;width:640px;max-width:94vw;max-height:85vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.admin-box h2{font-size:18px;font-weight:700;color:#0B1F3A;margin-bottom:4px}
+.admin-box .admin-sub{font-size:12px;color:#94a3b8;margin-bottom:20px}
+.admin-stats{display:flex;gap:12px;margin-bottom:20px}
+.admin-stat{flex:1;background:#f0f4ff;border-radius:10px;padding:14px;text-align:center}
+.admin-stat .stat-num{font-size:28px;font-weight:800;color:#0B1F3A}
+.admin-stat .stat-lbl{font-size:11px;color:#64748b;margin-top:2px}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px}
+.admin-table th{background:#0B1F3A;color:white;padding:8px 12px;text-align:left;font-weight:600}
+.admin-table td{padding:8px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+.admin-table tr:hover td{background:#f8fafc}
+.admin-close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8}
+.admin-loading{text-align:center;padding:32px;color:#64748b;font-size:14px}
 .code-box{width:46px;height:56px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;color:#0B1F3A;font-size:24px;font-weight:700;text-align:center;outline:none;font-family:inherit}
 .code-box:focus{border-color:#E8196E;background:white}
 </style>
@@ -197,6 +212,19 @@ textarea{resize:none}
   <div class="preview-area">
     <div class="preview-label">Vista previa</div>
     <div class="pdf-page-wrap"><div class="pdf-page" id="pdfPreview"></div></div>
+  </div>
+</div>
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-box" style="position:relative">
+    <button class="admin-close" onclick="closeAdmin()">✕</button>
+    <h2>Panel de Administración</h2>
+    <p class="admin-sub">Registros de descargas — Generador de Perfiles UA</p>
+    <div class="admin-stats">
+      <div class="admin-stat"><div class="stat-num" id="adminTotal">—</div><div class="stat-lbl">Descargas totales</div></div>
+      <div class="admin-stat"><div class="stat-num" id="adminUsers">—</div><div class="stat-lbl">Usuarios únicos</div></div>
+      <div class="admin-stat"><div class="stat-num" id="adminToday">—</div><div class="stat-lbl">Hoy</div></div>
+    </div>
+    <div id="adminContent"><div class="admin-loading">Cargando datos...</div></div>
   </div>
 </div>
 <script>
@@ -546,6 +574,7 @@ function downloadPDF(){
     doc.text(bl,W/2,y+10+(bl.length===1?4:0),{align:'center'});
 
     doc.save('UA Perfiles.pdf');
+    if(loggedEmail) trackDownload(loggedEmail);
   } catch(err){
     showToast('⚠️ Error al generar PDF: '+err.message);
     console.error(err);
@@ -561,6 +590,64 @@ document.addEventListener('mousemove',e=>{if(!isResizing)return;sidebar.style.wi
 document.addEventListener('mouseup',()=>{isResizing=false;document.body.style.cursor='';document.body.style.userSelect='';});
 
 // ── INIT ──────────────────────────────────────────────────────
+// ── TRACKING ─────────────────────────────────────────────────────────────────
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzaTtGZZxPIK6qf6vKDEGyMYdyjJqU8cmW_OdGy73cHfZkKJMhgwOaHFRPotKVTiEsu/exec';
+const ADMIN_EMAIL = 'kevin.szalai@universal-assistance.com';
+let loggedEmail = '';
+
+function trackDownload(email){
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-AR');
+  const hora = now.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'});
+  fetch(SHEETS_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email, fecha, hora}),
+    mode:'no-cors'
+  }).catch(()=>{});
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────────────
+function openAdmin(){
+  document.getElementById('adminOverlay').classList.add('open');
+  loadAdminData();
+}
+function closeAdmin(){
+  document.getElementById('adminOverlay').classList.remove('open');
+}
+
+function loadAdminData(){
+  document.getElementById('adminContent').innerHTML = '<div class="admin-loading">Cargando datos...</div>';
+  fetch(SHEETS_URL + '?action=get')
+    .then(r=>r.json())
+    .then(data=>{
+      renderAdmin(data);
+    }).catch(()=>{
+      document.getElementById('adminContent').innerHTML = '<div class="admin-loading">Error al cargar datos.</div>';
+    });
+}
+
+function renderAdmin(rows){
+  if(!rows || rows.length <= 1){ document.getElementById('adminContent').innerHTML='<div class="admin-loading">Sin registros aún.</div>'; return; }
+  const data = rows.slice(1); // skip header
+  const today = new Date().toLocaleDateString('es-AR');
+  const todayCount = data.filter(r=>r[1]===today).length;
+  const userMap = {};
+  data.forEach(r=>{ const e=r[0]||''; userMap[e]=(userMap[e]||0)+1; });
+  document.getElementById('adminTotal').textContent = data.length;
+  document.getElementById('adminUsers').textContent = Object.keys(userMap).length;
+  document.getElementById('adminToday').textContent = todayCount;
+  const sorted = Object.entries(userMap).sort((a,b)=>b[1]-a[1]);
+  let html = '<table class="admin-table"><thead><tr><th>Email</th><th>Descargas</th><th>Última descarga</th></tr></thead><tbody>';
+  sorted.forEach(([email, count])=>{
+    const lastRow = data.filter(r=>r[0]===email).pop();
+    const last = lastRow ? lastRow[1]+' '+lastRow[2] : '—';
+    html += `<tr><td>${email}</td><td style="font-weight:700;color:#0B1F3A">${count}</td><td>${last}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('adminContent').innerHTML = html;
+}
+
 // ── LOGIN ─────────────────────────────────────────────────────────────────────
 const EMAILJS_SERVICE = 'service_m8ftgar';
 const EMAILJS_TEMPLATE = 'template_b9hhx27';
@@ -620,6 +707,14 @@ function verifyCode(){
   if(Date.now() > codeExpiry){ errEl.textContent = 'El código expiró. Solicitá uno nuevo.'; return; }
   if(entered !== currentCode){ errEl.textContent = 'Código incorrecto. Intentá de nuevo.'; return; }
   document.getElementById('loginOverlay').style.display = 'none';
+  loggedEmail = document.getElementById('loginEmail').value.trim().toLowerCase();
+  if(loggedEmail === ADMIN_EMAIL){
+    const adminBtn = document.createElement('button');
+    adminBtn.textContent = '⚙ Admin';
+    adminBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0B1F3A;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;z-index:1000;font-family:inherit';
+    adminBtn.addEventListener('click', openAdmin);
+    document.body.appendChild(adminBtn);
+  }
 }
 
 function resendCode(){
