@@ -347,29 +347,58 @@ function applyPaste(){
 
 // ── FEATURES ──────────────────────────────────────────────────
 function buildFeatureRows(){
-  const list=document.getElementById('featuresList');
-  const btn=document.getElementById('addFeatBtn');
-  if(btn) btn.style.display=features.length>=3?'none':'flex';
-  list.innerHTML='';
-  for(var fi=0;fi<features.length;fi++){
-    (function(idx){
-      const block=document.createElement('div'); block.className='feat-block';
-      const hrow=document.createElement('div'); hrow.className='feat-block-header';
-      const ts=document.createElement('span'); ts.className='feat-block-title'; ts.textContent='Bloque '+(idx+1);
-      const db=document.createElement('button'); db.className='feat-del-btn'; db.textContent='Eliminar';
-      db.addEventListener('click',function(){ removeFeature(idx); });
-      hrow.appendChild(ts); hrow.appendChild(db); block.appendChild(hrow);
-      const l1=document.createElement('label'); l1.style.cssText='font-size:11px;color:#94a3b8;margin-bottom:3px;display:block'; l1.textContent='Título'; block.appendChild(l1);
-      const li=document.createElement('input'); li.type='text'; li.value=features[idx].label; li.placeholder='Título'; li.style.cssText='font-size:12px;width:100%;margin-bottom:6px';
-      li.addEventListener('input',function(){ features[idx].label=this.value; render(); }); block.appendChild(li);
-      const l2=document.createElement('label'); l2.style.cssText='font-size:11px;color:#94a3b8;margin-bottom:3px;display:block'; l2.textContent='Descripción'; block.appendChild(l2);
-      const sa=document.createElement('textarea'); sa.placeholder='Descripción'; sa.style.cssText='font-size:12px;width:100%;min-height:52px;resize:none'; sa.value=features[idx].sub;
-      sa.addEventListener('input',function(){
-        var lines=this.value.split('\n'); if(lines.length>3) this.value=lines.slice(0,3).join('\n');
-        features[idx].sub=this.value; render();
-      }); block.appendChild(sa); list.appendChild(block);
-    })(fi);
-  }
+  var list = document.getElementById('featuresList');
+  var btn = document.getElementById('addFeatBtn');
+  if(btn) btn.style.display = features.length >= 3 ? 'none' : 'flex';
+  list.innerHTML = '';
+  features.forEach(function(f, fi){
+    var block = document.createElement('div');
+    block.style.cssText = 'border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin-bottom:8px;background:#f8fafc';
+
+    var hrow = document.createElement('div');
+    hrow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:8px';
+
+    var ts = document.createElement('span');
+    ts.style.cssText = 'font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px';
+    ts.textContent = 'Bloque ' + (fi + 1);
+
+    var db = document.createElement('button');
+    db.style.cssText = 'font-size:11px;color:#c0392b;background:none;border:1px solid #fcc;border-radius:5px;padding:3px 8px;cursor:pointer;font-family:inherit';
+    db.textContent = 'Eliminar';
+    db.setAttribute('data-idx', fi);
+    db.onclick = function(){ removeFeature(parseInt(this.getAttribute('data-idx'))); };
+
+    hrow.appendChild(ts); hrow.appendChild(db); block.appendChild(hrow);
+
+    var l1 = document.createElement('label');
+    l1.style.cssText = 'font-size:11px;color:#94a3b8;margin-bottom:3px;display:block';
+    l1.textContent = 'Título'; block.appendChild(l1);
+
+    var li = document.createElement('input');
+    li.type = 'text'; li.value = f.label; li.placeholder = 'Título';
+    li.style.cssText = 'font-size:12px;width:100%;margin-bottom:6px';
+    li.setAttribute('data-idx', fi);
+    li.oninput = function(){ features[parseInt(this.getAttribute('data-idx'))].label = this.value; render(); };
+    block.appendChild(li);
+
+    var l2 = document.createElement('label');
+    l2.style.cssText = 'font-size:11px;color:#94a3b8;margin-bottom:3px;display:block';
+    l2.textContent = 'Descripción'; block.appendChild(l2);
+
+    var sa = document.createElement('textarea');
+    sa.placeholder = 'Descripción';
+    sa.style.cssText = 'font-size:12px;width:100%;min-height:52px;resize:none';
+    sa.value = f.sub;
+    sa.setAttribute('data-idx', fi);
+    sa.oninput = function(){
+      var lines = this.value.split('\n');
+      if(lines.length > 3) this.value = lines.slice(0,3).join('\n');
+      features[parseInt(this.getAttribute('data-idx'))].sub = this.value;
+      render();
+    };
+    block.appendChild(sa);
+    list.appendChild(block);
+  });
 }
 
 function addFeature(){ if(features.length>=3){showToast('Máximo 3 bloques');return;} features.push({label:'',sub:''}); buildFeatureRows(); render(); }
@@ -738,17 +767,18 @@ document.getElementById('loginCode').addEventListener('keydown', function(e){ if
 
 buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 
-// Check saved session - runs after DOM is ready
-(function(){
+// Check saved session
+window.addEventListener('load', function(){
   try {
-    const saved = localStorage.getItem('ua_session');
+    var saved = localStorage.getItem('ua_session');
     if(saved){
-      const session = JSON.parse(saved);
+      var session = JSON.parse(saved);
       if(session.expiry > Date.now()){
         loggedEmail = session.email;
-        document.getElementById('loginOverlay').style.display = 'none';
+        var overlay = document.getElementById('loginOverlay');
+        if(overlay) overlay.style.display = 'none';
         if(loggedEmail === ADMIN_EMAIL){
-          const adminBtn = document.createElement('button');
+          var adminBtn = document.createElement('button');
           adminBtn.textContent = '⚙ Admin';
           adminBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0B1F3A;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;z-index:1000;font-family:inherit';
           adminBtn.addEventListener('click', openAdmin);
@@ -757,7 +787,7 @@ buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); 
       }
     }
   } catch(e){}
-})();
+});
 </script>
 </body>
 </html>
