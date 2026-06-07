@@ -775,7 +775,7 @@ function backToEmail(){
 }
 
 document.getElementById('loginEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') sendCode(); });
-document.getElementById('loginCode').addEventListener('keydown', function(e){ if(e.key==='Enter') verifyCode(); });
+// loginCode replaced by code boxes
 
 buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 
