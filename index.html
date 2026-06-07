@@ -736,7 +736,9 @@ function backToEmail(){
 document.getElementById('loginEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') sendCode(); });
 document.getElementById('loginCode').addEventListener('keydown', function(e){ if(e.key==='Enter') verifyCode(); });
 
-// Check saved session
+buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
+
+// Check saved session - runs after DOM is ready
 (function(){
   try {
     const saved = localStorage.getItem('ua_session');
@@ -756,8 +758,6 @@ document.getElementById('loginCode').addEventListener('keydown', function(e){ if
     }
   } catch(e){}
 })();
-
-buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 </script>
 </body>
 </html>
