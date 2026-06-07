@@ -691,6 +691,7 @@ emailjs.init(EMAILJS_KEY);
 
 function sendCode(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  loggedEmail = email;
   const errEl = document.getElementById('emailError');
   errEl.textContent = '';
   if(!email.endsWith('@'+ALLOWED_DOMAIN)){
@@ -738,9 +739,9 @@ function verifyCode(){
   if(Date.now() > codeExpiry){ errEl.textContent = 'El código expiró. Solicitá uno nuevo.'; return; }
   if(entered !== currentCode){ errEl.textContent = 'Código incorrecto. Intentá de nuevo.'; return; }
   document.getElementById('loginOverlay').style.display = 'none';
-  loggedEmail = document.getElementById('loginEmail').value.trim().toLowerCase();
+  // loggedEmail already set in sendCode()
   // Save session for 365 days
-  const expiry = Date.now() + 365 * 24 * 60 * 60 * 1000;
+  var expiry = Date.now() + 365 * 24 * 60 * 60 * 1000;
   localStorage.setItem('ua_session', JSON.stringify({email: loggedEmail, expiry: expiry}));
   if(loggedEmail === ADMIN_EMAIL){
     const adminBtn = document.createElement('button');
