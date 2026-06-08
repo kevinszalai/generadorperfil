@@ -136,11 +136,14 @@ textarea{resize:none}
   </div>
   <div class="login-box">
     <div id="stepEmail" class="login-step">
-      <h2>Acceso al Generador de Perfiles</h2>
-      <p>Ingresá tu email corporativo de Universal Assistance</p>
+      <h2>Bienvenido</h2>
+      <p style="font-size:14px;color:#64748b;margin-bottom:4px;margin-top:12px">Plataforma de generador de</p>
+      <p style="font-size:15px;font-weight:800;color:#0B1F3A;margin-bottom:20px">Perfiles de Cobertura</p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:4px">Ingresá con tu email corporativo</p>
+      <p style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:20px">nombre.apellido@universal-assistance.com</p>
       <input class="login-input" type="email" id="loginEmail" placeholder="nombre.apellido@universal-assistance.com">
       <div class="login-error" id="emailError"></div>
-      <button class="login-btn" id="sendCodeBtn" onclick="sendCode()">Enviar código</button>
+      <button class="login-btn" id="sendCodeBtn" onclick="sendCode()">Ingresar</button>
     </div>
     <div id="stepCode" class="login-step" style="display:none">
       <h2>Revisá tu email</h2>
@@ -701,7 +704,9 @@ let codeExpiry = 0;
 emailjs.init(EMAILJS_KEY);
 
 function sendCode(){
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  var rawInput = document.getElementById('loginEmail').value.trim().toLowerCase();
+  // Auto-complete if no @ present
+  const email = rawInput.includes('@') ? rawInput : rawInput + '@universal-assistance.com';
   loggedEmail = email;
   const errEl = document.getElementById('emailError');
   errEl.textContent = '';
