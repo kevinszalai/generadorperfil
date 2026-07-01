@@ -1197,19 +1197,17 @@ function importExcel(input){
       }
 
       var headers = rows[headerRowIdx];
-      var nPlans = headers.length - 1;
-      if(nPlans < 1 || nPlans > 6){ showToast('⚠️ El archivo debe tener entre 1 y 6 planes'); return; }
 
-      // Only count plans that have a name
+      // Count only plans with real names (ignore empty and placeholder text)
       var newPlanNames = ['','','','','',''];
-      var activePlans = 0;
-      for(var i=0;i<nPlans;i++){
+      var nPlans = 0;
+      for(var i=0;i<6;i++){
         var pname = String(headers[i+1]||'').trim();
-        // Strip template placeholder text
-        pname = pname.replace(/^→\s*(Nombre del Plan \d+)?/i,'').trim();
-        if(pname) { newPlanNames[activePlans] = pname; activePlans++; }
+        // Strip placeholder text like "→ Nombre Plan 1"
+        pname = pname.replace(/^[→»]\s*/,'').replace(/^Nombre\s+[Pp]lan\s*\d*/i,'').trim();
+        if(pname){ newPlanNames[nPlans] = pname; nPlans++; }
       }
-      if(activePlans > 0) nPlans = activePlans;
+      if(nPlans === 0){ showToast('⚠️ No se encontraron nombres de planes'); return; }
 
       var newCoverages = [];
       var newFootnote = '';
@@ -1236,9 +1234,14 @@ function importExcel(input){
         var rows2 = XLSX.utils.sheet_to_json(ws2, {header:1, defval:''});
         for(var r2=0;r2<rows2.length;r2++){
           var val = String(rows2[r2][0]||'').trim();
-          if(val && !val.toUpperCase().startsWith('LEGALES') && !val.startsWith('Completá') && !val.startsWith('Escribí')){
-            newFootnote = val; break;
-          }
+          // Skip header/instruction rows
+          if(!val) continue;
+          if(val.includes('NO MODIFICAR')) continue;
+          if(val.toUpperCase().startsWith('LEGALES')) continue;
+          if(val.startsWith('✏️') || val.startsWith('⛔')) continue;
+          if(val.startsWith('Completá') || val.startsWith('Escribí')) continue;
+          // This is the legal text
+          newFootnote = val; break;
         }
       }
 
