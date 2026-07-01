@@ -90,6 +90,39 @@ textarea{resize:none}
 .paste-modal-btns{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
 .paste-modal-cancel{background:none;border:1px solid #cbd5e1;border-radius:6px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit}
 .paste-modal-ok{background:#E8196E;color:white;border:none;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.import-modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10000;align-items:center;justify-content:center}
+.import-modal-overlay.open{display:flex}
+.import-modal{background:white;border-radius:16px;padding:28px;width:480px;max-width:94vw;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.import-modal h3{font-size:16px;font-weight:700;color:#0B1F3A;margin-bottom:6px}
+.import-modal p{font-size:12px;color:#64748b;margin-bottom:20px}
+.import-options{display:flex;gap:12px}
+.import-option{flex:1;border:1.5px solid #e2e8f0;border-radius:12px;padding:20px 16px;cursor:pointer;text-align:center;transition:all .2s}
+.import-option:hover{border-color:#0B1F3A;background:#f0f4ff}
+.import-option .import-icon{font-size:28px;margin-bottom:10px}
+.import-option .import-title{font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:4px}
+.import-option .import-desc{font-size:11px;color:#64748b;line-height:1.4}
+.import-modal-cancel{display:block;margin:16px auto 0;background:none;border:none;color:#94a3b8;font-size:12px;cursor:pointer;font-family:inherit}
+.confirm-modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10001;align-items:center;justify-content:center}
+.confirm-modal-overlay.open{display:flex}
+.confirm-modal{background:white;border-radius:12px;padding:28px;width:360px;max-width:92vw;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.confirm-modal h3{font-size:15px;font-weight:700;color:#0B1F3A;margin-bottom:8px}
+.confirm-modal p{font-size:13px;color:#64748b;margin-bottom:20px;line-height:1.5}
+.confirm-modal-btns{display:flex;gap:8px;justify-content:center}
+.confirm-no{background:none;border:1px solid #e2e8f0;border-radius:8px;padding:10px 20px;font-size:13px;cursor:pointer;font-family:inherit;color:#64748b}
+.confirm-yes{background:#c0392b;color:white;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.onboard-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:10002;align-items:center;justify-content:center}
+.onboard-overlay.open{display:flex}
+.onboard-box{background:white;border-radius:16px;padding:32px;width:480px;max-width:94vw;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.onboard-box h2{font-size:18px;font-weight:800;color:#0B1F3A;margin-bottom:6px}
+.onboard-box .onboard-sub{font-size:13px;color:#64748b;margin-bottom:24px}
+.onboard-steps{display:flex;gap:12px;margin-bottom:24px}
+.onboard-step{flex:1;background:#f0f4ff;border-radius:10px;padding:16px 12px;text-align:center}
+.onboard-step .step-num{width:28px;height:28px;background:#0B1F3A;color:white;border-radius:50%;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.onboard-step .step-title{font-size:12px;font-weight:700;color:#0B1F3A;margin-bottom:4px}
+.onboard-step .step-desc{font-size:11px;color:#64748b;line-height:1.4}
+.onboard-ok{background:#E8196E;color:white;border:none;border-radius:8px;padding:12px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.paste-sub-modal{display:none;margin-top:16px;border-top:1px solid #e2e8f0;padding-top:16px}
+.paste-sub-modal.open{display:block}
 .name-modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10000;align-items:center;justify-content:center}
 .name-modal-overlay.open{display:flex}
 .name-modal{background:white;border-radius:12px;padding:28px;width:400px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,0,.2)}
@@ -157,6 +190,64 @@ textarea{resize:none}
       <button class="paste-modal-cancel" onclick="closePasteModal()">Cancelar</button>
       <button class="paste-modal-ok" onclick="applyPaste()">Aplicar</button>
     </div>
+  </div>
+</div>
+<div class="onboard-overlay" id="onboardOverlay">
+  <div class="onboard-box">
+    <h2>¡Bienvenido al Generador!</h2>
+    <p class="onboard-sub">Seguí estos 3 pasos para crear tu perfil de cobertura</p>
+    <div class="onboard-steps">
+      <div class="onboard-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Elegí los planes</div>
+        <div class="step-desc">Seleccioná cuántos planes tiene el producto y poneles un nombre</div>
+      </div>
+      <div class="onboard-step">
+        <div class="step-num">2</div>
+        <div class="step-title">Cargá las coberturas</div>
+        <div class="step-desc">Importá desde Excel o pegá las coberturas columna por columna</div>
+      </div>
+      <div class="onboard-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Descargá el PDF</div>
+        <div class="step-desc">Completá los legales y descargá el perfil listo para compartir</div>
+      </div>
+    </div>
+    <button class="onboard-ok" onclick="closeOnboard()">¡Entendido!</button>
+  </div>
+</div>
+<div class="confirm-modal-overlay" id="confirmModal">
+  <div class="confirm-modal">
+    <h3>¿Borrar todo?</h3>
+    <p>Se va a eliminar el borrador actual y empezar de cero. Esta acción no se puede deshacer.</p>
+    <div class="confirm-modal-btns">
+      <button class="confirm-no" onclick="closeConfirmModal()">Cancelar</button>
+      <button class="confirm-yes" onclick="confirmClearDraft()">Sí, borrar todo</button>
+    </div>
+  </div>
+</div>
+<div class="import-modal-overlay" id="importModal">
+  <div class="import-modal">
+    <h3>Importar datos</h3>
+    <p>¿Cómo querés cargar la información del perfil?</p>
+    <div class="import-options">
+      <div class="import-option" onclick="chooseExcel()">
+        <div class="import-icon">📥</div>
+        <div class="import-title">Subir Excel</div>
+        <div class="import-desc">Cargá la plantilla completa con coberturas, planes y legales</div>
+      </div>
+      <div class="import-option" onclick="choosePaste()">
+        <div class="import-icon">📋</div>
+        <div class="import-title">Pegar columnas</div>
+        <div class="import-desc">Pegá columna por columna desde Excel u otra fuente</div>
+      </div>
+    </div>
+    <div class="paste-sub-modal" id="pasteSubModal">
+      <p style="font-size:12px;color:#64748b;margin-bottom:8px">Seleccioná qué columna querés pegar:</p>
+      <div id="pasteSubBtns" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
+    <button class="import-modal-cancel" onclick="closeImportModal()">Cancelar</button>
   </div>
 </div>
 <div class="name-modal-overlay" id="nameModal">
@@ -244,7 +335,7 @@ textarea{resize:none}
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
       <button onclick="document.getElementById('excelInput').click()" title="Importar coberturas, planes y legales desde Excel" style="background:#0B1F3A;color:white;border:none;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">📥 Importar Excel</button>
       <button onclick="downloadTemplate()" style="background:none;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;color:#64748b">📋 Descargar plantilla</button>
-      <input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
+      
     </div>
     <p style="font-size:11px;color:#94a3b8;margin-bottom:6px">Pegar desde portapapeles</p>
       <div class="paste-row" id="pasteBtns"></div>
@@ -278,7 +369,7 @@ textarea{resize:none}
     &#128465; Borrar borrador y empezar de cero
   </button>
 </div>
-<button class="generate-btn" onclick="openNameModal()">&#11015; Descargar PDF</button>
+<button class="generate-btn" id="downloadBtn" onclick="openNameModal()">&#11015; Descargar PDF</button>
   </div>
   <div class="resizer" id="resizer"></div>
   <div class="preview-area">
@@ -491,7 +582,18 @@ function removeFeature(i){ features.splice(i,1); buildFeatureRows(); render(); }
 
 // ── RENDER PREVIEW ────────────────────────────────────────────
 function clearDraft(){
-  if(!confirm('¿Borrar todo y empezar de cero?')) return;
+  document.getElementById('confirmModal').classList.add('open');
+}
+function closeOnboard(){
+  localStorage.setItem('ua_onboarded','1');
+  document.getElementById('onboardOverlay').classList.remove('open');
+}
+
+function closeConfirmModal(){
+  document.getElementById('confirmModal').classList.remove('open');
+}
+function confirmClearDraft(){
+  closeConfirmModal();
   localStorage.removeItem('ua_draft');
   numPlans = 1;
   planNames = ['','','','','',''];
@@ -619,6 +721,12 @@ function drawSubHeader(doc,y,W,margin,nameColW,colW){
 
 function downloadPDF(pdfName){
   var pdfFileName = pdfName || 'UA Perfiles';
+  var btn = document.getElementById('downloadBtn');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Generando...'; }
+  setTimeout(function(){ _generatePDF(pdfFileName); }, 50);
+}
+function _generatePDF(pdfFileName){
+  var btn = document.getElementById('downloadBtn');
   // Validate
   if(!coverages.length||coverages.every(c=>c.name.trim()==='')){showToast('⚠️ Agregá al menos una cobertura');return;}
   for(let i=0;i<coverages.length;i++) if(!coverages[i].name.trim()){showToast('⚠️ Hay coberturas vacías. Completalas o eliminalas');return;}
@@ -738,9 +846,11 @@ function downloadPDF(pdfName){
 
     doc.save(pdfFileName+'.pdf');
     if(loggedEmail) trackDownload(loggedEmail);
+    if(btn){ btn.disabled=false; btn.innerHTML='&#11015; Descargar PDF'; }
   } catch(err){
     showToast('⚠️ Error al generar PDF: '+err.message);
     console.error(err);
+    if(btn){ btn.disabled=false; btn.innerHTML='&#11015; Descargar PDF'; }
   }
 }
 
@@ -880,6 +990,13 @@ function verifyCode(){
   if(entered !== currentCode){ errEl.textContent = 'Código incorrecto. Intentá de nuevo.'; return; }
   document.getElementById('loginOverlay').style.display = 'none';
   // loggedEmail already set in sendCode()
+  var welcomeName = loggedEmail.split('@')[0].split('.')[0];
+  welcomeName = welcomeName.charAt(0).toUpperCase() + welcomeName.slice(1);
+  showToast('👋 Bienvenido, ' + welcomeName + '!');
+  // Show onboarding only first time
+  if(!localStorage.getItem('ua_onboarded')){
+    setTimeout(function(){ document.getElementById('onboardOverlay').classList.add('open'); }, 800);
+  }
   // Save session for 365 days
   var expiry = Date.now() + 365 * 24 * 60 * 60 * 1000;
   localStorage.setItem('ua_session', JSON.stringify({email: loggedEmail, expiry: expiry}));
@@ -1024,6 +1141,40 @@ function applyHistoryEntry(entry){
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
 }
 
+// ── IMPORT MODAL ──────────────────────────────────────────────────────────────
+function openImportModal(){
+  document.getElementById('pasteSubModal').classList.remove('open');
+  document.getElementById('importModal').classList.add('open');
+}
+
+function closeImportModal(){
+  document.getElementById('importModal').classList.remove('open');
+  document.getElementById('pasteSubModal').classList.remove('open');
+}
+
+function chooseExcel(){
+  document.getElementById('excelInput').click();
+}
+
+function choosePaste(){
+  var sub = document.getElementById('pasteSubModal');
+  sub.classList.add('open');
+  var btns = document.getElementById('pasteSubBtns');
+  btns.innerHTML = '';
+  var b0 = document.createElement('button');
+  b0.className = 'paste-btn'; b0.textContent = '📋 Coberturas';
+  b0.onclick = function(){ closeImportModal(); openPasteModal(-1); };
+  btns.appendChild(b0);
+  for(var i=0;i<numPlans;i++){
+    (function(n){
+      var btn = document.createElement('button'); btn.className = 'paste-btn';
+      btn.textContent = '📋 ' + (planNames[n]||'Plan '+(n+1));
+      btn.onclick = function(){ closeImportModal(); openPasteModal(n); };
+      btns.appendChild(btn);
+    })(i);
+  }
+}
+
 // ── EXCEL ─────────────────────────────────────────────────────────────────────
 function importExcel(input){
   var file = input.files[0];
@@ -1105,6 +1256,11 @@ function importExcel(input){
       buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
       showToast('✅ Excel importado correctamente — ' + newCoverages.length + ' coberturas, ' + nPlans + ' plan(es)');
+      closeImportModal();
+      setTimeout(function(){ 
+        var preview = document.getElementById('pdfPreview');
+        if(preview) preview.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 300);
     } catch(err){
       showToast('⚠️ Error al leer el archivo: ' + err.message);
     }
