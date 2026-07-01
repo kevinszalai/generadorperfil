@@ -1189,11 +1189,11 @@ function importExcel(input){
       var rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
       if(!rows || rows.length < 2){ showToast('⚠️ El archivo no tiene el formato correcto'); return; }
 
-      // Find header row (skip reminder rows at top)
+      // Find header row (look for row starting with 'Cobertura')
       var headerRowIdx = 0;
       for(var ri=0;ri<rows.length;ri++){
-        var firstCell = String(rows[ri][0]||'').trim();
-        if(firstCell.toLowerCase() === 'cobertura'){ headerRowIdx = ri; break; }
+        var firstCell = String(rows[ri][0]||'').trim().toLowerCase();
+        if(firstCell === 'cobertura'){ headerRowIdx = ri; break; }
       }
 
       var headers = rows[headerRowIdx];
@@ -1205,6 +1205,8 @@ function importExcel(input){
       var activePlans = 0;
       for(var i=0;i<nPlans;i++){
         var pname = String(headers[i+1]||'').trim();
+        // Strip template placeholder text
+        pname = pname.replace(/^→\s*(Nombre del Plan \d+)?/i,'').trim();
         if(pname) { newPlanNames[activePlans] = pname; activePlans++; }
       }
       if(activePlans > 0) nPlans = activePlans;
