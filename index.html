@@ -1271,17 +1271,54 @@ document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_
 
 function downloadTemplate(){
   var wb = XLSX.utils.book_new();
-  var data = [
-    ['Cobertura', 'Plan Básico', 'Plan Estándar', 'Plan Premium'],
-    ['Asistencia médica', 'USD 20.000', 'USD 30.000', 'USD 50.000'],
-    ['Odontología', 'USD 500', 'USD 750', 'USD 1.000'],
-    ['Repatriación', 'Incluido', 'Incluido', 'Incluido'],
-    ['LEGALES: Texto legal aquí', '', '', ''],
-    ['BANNER: Texto del banner aquí', '', '', ''],
+
+  // Hoja 1: Coberturas
+  var data1 = [
+    ['📋 Recordá completar los LEGALES en la Hoja 2  |  Máximo 6 planes','','','','','',''],
+    ['Cobertura','Plan 1','Plan 2','Plan 3','Plan 4','Plan 5','Plan 6'],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
+    ['','','','','','',''],
   ];
-  var ws = XLSX.utils.aoa_to_sheet(data);
-  ws['!cols'] = [{wch:40},{wch:18},{wch:18},{wch:18}];
-  XLSX.utils.book_append_sheet(wb, ws, 'Perfiles UA');
+  var ws1 = XLSX.utils.aoa_to_sheet(data1);
+  ws1['!cols'] = [{wch:45},{wch:16},{wch:16},{wch:16},{wch:16},{wch:16},{wch:16}];
+  ws1['!merges'] = [{s:{r:0,c:0},e:{r:0,c:6}}];
+  XLSX.utils.book_append_sheet(wb, ws1, 'Coberturas');
+
+  // Hoja 2: Legales
+  var data2 = [
+    ['LEGALES',''],
+    ['Completá el texto legal en la celda de abajo',''],
+    ['',''],
+  ];
+  var ws2 = XLSX.utils.aoa_to_sheet(data2);
+  ws2['!cols'] = [{wch:60},{wch:20}];
+  ws2['!merges'] = [{s:{r:0,c:0},e:{r:0,c:1}},{s:{r:1,c:0},e:{r:1,c:1}},{s:{r:2,c:0},e:{r:2,c:1}}];
+  ws2['!rows'] = [{hpt:30},{hpt:20},{hpt:90}];
+  XLSX.utils.book_append_sheet(wb, ws2, 'Legales');
+
   XLSX.writeFile(wb, 'Plantilla_Perfiles_UA.xlsx');
 }
 
