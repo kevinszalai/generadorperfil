@@ -731,25 +731,24 @@ function render(){
       Array.from({length:numPlans},function(_,i){ return '<span class="pdf-cov-val-multi">'+escH(c.vals[i]||'—')+'</span>'; }).join('');
     return '<div class="pdf-cov-row"><span class="pdf-cov-name">'+(escH(cleanName(c.name)))+'</span>'+(v)+'</div>';
   }).join('');
-  var icons=features.map(function(f){ return '<div class="pdf-icon-card"><div class="pdf-icon-label">'+(escH(f.label))+'</div><div class="pdf-icon-sub">'+(escH(f.sub))+'</div></div>').join('');
+  var icons=features.map(function(f){ return '<div class="pdf-icon-card"><div class="pdf-icon-label">'+escH(f.label)+'</div><div class="pdf-icon-sub">'+escH(f.sub)+'</div></div>'; }).join('');
   var headerRight=numPlans===1&&planNames[0]?'<div class="pdf-product-title">'+(escH(planNames[0]))+'</div>':'';
-  document.getElementById('pdfPreview').innerHTML='
-    <div class="pdf-header">
-      <img src="'+(LOGO_DATA)+'" style="height:36px;width:auto;mix-blend-mode:screen" alt="UA">
-      '+(headerRight)+'
-    </div>
-    <div class="pdf-body">
-      <div class="pdf-table-wrapper">
-        <div class="pdf-table-head"><h2>COBERTURAS</h2></div>
-        <div class="pdf-col-headers">'+(colHdr)+'</div>
-        '+(rows)+'
-      </div>
-      <div class="pdf-footnote">'+(escH(footnote))+'</div>
-      ${icons?'<div class="pdf-icons-row">${icons}</div>':''}
-      <div class="pdf-banner">'+(escH(banner))+'</div>
-    </div>';
-  saveDraft();
-}
+  document.getElementById('pdfPreview').innerHTML=
+    '<div class="pdf-header">'+
+    '<img src="'+(LOGO_DATA)+'" style="height:36px;width:auto;mix-blend-mode:screen" alt="UA">'+
+    headerRight+
+    '</div>'+
+    '<div class="pdf-body">'+
+    '<div class="pdf-table-wrapper">'+
+    '<div class="pdf-table-head"><h2>COBERTURAS</h2></div>'+
+    '<div class="pdf-col-headers">'+colHdr+'</div>'+
+    rows+
+    '</div>'+
+    '<div class="pdf-footnote">'+escH(footnote)+'</div>'+
+    (icons?'<div class="pdf-icons-row">'+icons+'</div>':'')+
+    '<div class="pdf-banner">'+escH(banner)+'</div>'+
+    '</div>';
+}}
 
 // ── PDF DOWNLOAD ──────────────────────────────────────────────
 function drawHeader(doc,W,margin){
