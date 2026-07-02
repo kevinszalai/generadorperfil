@@ -668,7 +668,6 @@ function clearDraft(){
   document.getElementById('confirmModal').classList.add('open');
 }
 function closeOnboard(){
-  localStorage.setItem('ua_onboarded','1');
   document.getElementById('onboardOverlay').classList.remove('open');
 }
 
@@ -1077,10 +1076,7 @@ function verifyCode(){
   var welcomeName = loggedEmail.split('@')[0].split('.')[0];
   welcomeName = welcomeName.charAt(0).toUpperCase() + welcomeName.slice(1);
   showToast('👋 Bienvenido, ' + welcomeName + '!');
-  // Show onboarding only first time
-  if(!localStorage.getItem('ua_onboarded')){
-    setTimeout(function(){ document.getElementById('onboardOverlay').classList.add('open'); }, 800);
-  }
+  setTimeout(function(){ document.getElementById('onboardOverlay').classList.add('open'); }, 800);
   // Save session for 365 days
   var expiry = Date.now() + 365 * 24 * 60 * 60 * 1000;
   localStorage.setItem('ua_session', JSON.stringify({email: loggedEmail, expiry: expiry}));
