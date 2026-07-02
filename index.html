@@ -77,6 +77,17 @@ textarea{resize:none}
 .feat-block-title{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
 .feat-del-btn{font-size:11px;color:#c0392b;background:none;border:1px solid #fcc;border-radius:5px;padding:3px 8px;cursor:pointer;font-family:inherit}
 .resizer{width:6px;background:#e2e8f0;cursor:col-resize;flex-shrink:0}
+.step-block{padding:14px 20px;border-bottom:1px solid #e2e8f0}
+.step-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.step-badge{width:26px;height:26px;background:#0B1F3A;color:white;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:13px;font-weight:700;color:#0B1F3A;flex:1}
+.step-edit-btn{background:none;border:1px solid #e2e8f0;border-radius:5px;padding:3px 8px;font-size:11px;color:#64748b;cursor:pointer;font-family:inherit}
+.step-edit-btn:hover{border-color:#0B1F3A;color:#0B1F3A}
+.step-content{padding-left:4px}
+.step-next-btn{width:100%;margin-top:14px;background:#0B1F3A;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.step-next-btn:hover{background:#1a3a6e}
+.step-option-btn{display:flex;align-items:center;gap:12px;width:100%;background:white;border:1.5px solid #e2e8f0;border-radius:10px;padding:14px;cursor:pointer;font-family:inherit;text-align:left}
+.step-option-btn:hover{border-color:#0B1F3A;background:#f0f4ff}
 .resizer:hover{background:#E8196E}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#c0392b;color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
@@ -246,7 +257,6 @@ textarea{resize:none}
       <p style="font-size:12px;color:#64748b;margin-bottom:8px">Seleccioná qué columna querés pegar:</p>
       <div id="pasteSubBtns" style="display:flex;flex-wrap:wrap;gap:6px"></div>
     </div>
-    <input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
     <button class="import-modal-cancel" onclick="closeImportModal()">Cancelar</button>
   </div>
 </div>
@@ -306,20 +316,54 @@ textarea{resize:none}
     </div>
   </div>
 </div></div>
+<input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
 <div class="app">
   <div class="sidebar">
     <div class="sidebar-header">
-      <img class="ua-logo-img" src="" style="height:28px;width:auto;display:block;margin-bottom:6px;mix-blend-mode:screen" alt="UA">
+      <img class="ua-logo-img" src="" alt="UA" style="height:28px;width:auto;display:block;margin-bottom:6px">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <p style="color:rgba(255,255,255,.5);font-size:11px">Generador de Perfiles de Cobertura</p>
         <button onclick="openHistory()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:inherit">📂 Historial</button>
       </div>
     </div>
-    <div class="section">
-      <div class="section-title">Producto</div>
-      <div style="margin-top:4px">
+
+    <!-- PASO 0: Inicio -->
+    <div class="step-block" id="step0">
+      <div class="step-header">
+        <div class="step-badge">🚀</div>
+        <div class="step-title">¿Cómo querés empezar?</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <button class="step-option-btn" onclick="chooseExcelFlow()">
+          <span style="font-size:18px">📥</span>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:#0B1F3A">Importar desde Excel</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px">Cargá la plantilla con coberturas, planes y legales</div>
+          </div>
+        </button>
+        <button class="step-option-btn" onclick="chooseManualFlow()">
+          <span style="font-size:18px">✏️</span>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:#0B1F3A">Cargar manualmente</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px">Completá los datos paso a paso</div>
+          </div>
+        </button>
+        <button onclick="downloadTemplate()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:11px;color:#64748b;cursor:pointer;font-family:inherit;text-align:center">
+          📋 Descargar plantilla Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- PASO 1: Producto -->
+    <div class="step-block" id="step1" style="display:none">
+      <div class="step-header">
+        <div class="step-badge">1</div>
+        <div class="step-title">Producto</div>
+        <button class="step-edit-btn" onclick="goToStep(0)">Cambiar</button>
+      </div>
+      <div class="step-content">
         <label>Cantidad de planes</label>
-        <div class="tabs" id="planTabs">
+        <div class="tabs" id="planTabs" style="margin-top:6px">
           <button class="tab active" onclick="setPlans(1)">1</button>
           <button class="tab" onclick="setPlans(2)">2</button>
           <button class="tab" onclick="setPlans(3)">3</button>
@@ -328,49 +372,72 @@ textarea{resize:none}
           <button class="tab" onclick="setPlans(6)">6</button>
         </div>
         <div id="planNamesWrap"></div>
+        <button class="step-next-btn" onclick="goToStep(2)">Continuar →</button>
       </div>
     </div>
-    <div class="section">
-      <div class="section-title">Coberturas</div>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-      <button onclick="openImportModal()" style="background:#0B1F3A;color:white;border:none;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">📥 Importar datos</button>
-      <button onclick="downloadTemplate()" style="background:none;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;color:#64748b">📋 Descargar plantilla</button>
-      
-    </div>
-    <p style="font-size:11px;color:#94a3b8;margin-bottom:6px">Pegar desde portapapeles</p>
-      <div class="paste-row" id="pasteBtns"></div>
-      <div class="col-headers" id="colHeaders">
-        <span style="flex:2">Cobertura</span>
-        <span style="flex:1;text-align:right">Valor</span>
-        <span style="width:28px"></span>
+
+    <!-- PASO 2: Coberturas -->
+    <div class="step-block" id="step2" style="display:none">
+      <div class="step-header">
+        <div class="step-badge">2</div>
+        <div class="step-title">Coberturas</div>
+        <button class="step-edit-btn" onclick="goToStep(1)">← Volver</button>
       </div>
-      <div id="coverageList"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-        <button class="add-btn" onclick="addCoverage()">+ Agregar nueva fila</button>
-        <button onclick="clearCoverages()" style="font-size:11px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:inherit">&#128465; Borrar todo</button>
-      </div>
-    </div>
-    <div class="section">
-      <div class="section-title">Destacados del pie</div>
-      <div id="featuresList"></div>
-      <button class="add-btn" id="addFeatBtn" onclick="addFeature()">+ Agregar bloque</button>
-    </div>
-    <div class="section">
-      <label>Legales <span style="color:#E8196E">*</span></label>
-      <textarea id="footnote" rows="3" style="font-size:11px" placeholder="Campo obligatorio" oninput="render();document.getElementById('footnoteCount').textContent=this.value.length+' caracteres'"></textarea>
-      <div style="text-align:right;font-size:10px;color:#94a3b8;margin-top:2px" id="footnoteCount">0 caracteres</div>
-      <div style="margin-top:8px">
-        <label>Banner</label>
-        <textarea id="banner" rows="2" style="font-size:11px" oninput="render()">Consulta con tu asesor de ventas la totalidad de nuestras coberturas y las novedades que tenemos para ti</textarea>
+      <div class="step-content">
+        <div class="paste-row" id="pasteBtns"></div>
+        <div class="col-headers" id="colHeaders">
+          <span style="flex:2">Cobertura</span>
+          <span style="flex:1;text-align:right">Valor</span>
+          <span style="width:28px"></span>
+        </div>
+        <div id="coverageList"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+          <button class="add-btn" onclick="addCoverage()">+ Agregar fila</button>
+          <button onclick="clearCoverages()" style="font-size:11px;color:#94a3b8;background:none;border:none;cursor:pointer;font-family:inherit">&#128465; Borrar todo</button>
+        </div>
+        <button class="step-next-btn" onclick="goToStep(3)">Continuar →</button>
       </div>
     </div>
-    <div style="padding:0 20px 8px">
-  <button onclick="clearDraft()" style="width:100%;background:none;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:12px;color:#94a3b8;cursor:pointer;font-family:inherit">
-    &#128465; Borrar borrador y empezar de cero
-  </button>
-</div>
-<button class="generate-btn" id="downloadBtn" onclick="openNameModal()">&#11015; Descargar PDF</button>
-  </div>
+
+    <!-- PASO 3: Destacados -->
+    <div class="step-block" id="step3" style="display:none">
+      <div class="step-header">
+        <div class="step-badge">3</div>
+        <div class="step-title">Destacados del pie</div>
+        <button class="step-edit-btn" onclick="goToStep(2)">← Volver</button>
+      </div>
+      <div class="step-content">
+        <div id="featuresList"></div>
+        <button class="add-btn" id="addFeatBtn" onclick="addFeature()">+ Agregar bloque</button>
+        <button class="step-next-btn" onclick="goToStep(4)">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- PASO 4: Legales y Banner -->
+    <div class="step-block" id="step4" style="display:none">
+      <div class="step-header">
+        <div class="step-badge">4</div>
+        <div class="step-title">Legales y Banner</div>
+        <button class="step-edit-btn" onclick="goToStep(3)">← Volver</button>
+      </div>
+      <div class="step-content">
+        <label>Legales <span style="color:#E8196E">*</span></label>
+        <textarea id="footnote" rows="3" style="font-size:11px" placeholder="Campo obligatorio" oninput="render();document.getElementById('footnoteCount').textContent=this.value.length+' caracteres'"></textarea>
+        <div style="text-align:right;font-size:10px;color:#94a3b8;margin-top:2px" id="footnoteCount">0 caracteres</div>
+        <div style="margin-top:8px">
+          <label>Banner</label>
+          <textarea id="banner" rows="2" style="font-size:11px" oninput="render()">Consulta con tu asesor de ventas la totalidad de nuestras coberturas y las novedades que tenemos para ti</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Borrar y Descargar -->
+    <div style="padding:0 20px 8px;margin-top:8px">
+      <button onclick="clearDraft()" style="width:100%;background:none;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:12px;color:#94a3b8;cursor:pointer;font-family:inherit">
+        &#128465; Borrar borrador y empezar de cero
+      </button>
+    </div>
+    <button class="generate-btn" id="downloadBtn" onclick="openNameModal()">&#11015; Descargar PDF</button></div>
   <div class="resizer" id="resizer"></div>
   <div class="preview-area">
     <div style="display:flex;align-items:center;width:100%;margin-bottom:12px">
@@ -634,6 +701,7 @@ function loadDraft(){
     buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons();
     if(draft.footnote && document.getElementById('footnote')) document.getElementById('footnote').value = draft.footnote;
     if(draft.banner && document.getElementById('banner')) document.getElementById('banner').value = draft.banner;
+    goToStep(1);
   } catch(e){}
 }
 
@@ -1153,10 +1221,13 @@ function closeImportModal(){
 }
 
 function chooseExcel(){
+  closeImportModal();
   document.getElementById('excelInput').click();
 }
 
 function choosePaste(){
+  closeImportModal();
+  goToStep(1);
   var sub = document.getElementById('pasteSubModal');
   sub.classList.add('open');
   var btns = document.getElementById('pasteSubBtns');
@@ -1261,7 +1332,7 @@ function importExcel(input){
       buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
       showToast('✅ Excel importado correctamente — ' + newCoverages.length + ' coberturas, ' + nPlans + ' plan(es)');
-      closeImportModal();
+      goToStep(3);
       setTimeout(function(){ 
         var preview = document.getElementById('pdfPreview');
         if(preview) preview.scrollIntoView({behavior:'smooth', block:'start'});
@@ -1285,6 +1356,25 @@ function downloadTemplate(){
   a.href = url; a.download = 'Plantilla_Perfiles_UA.xlsx';
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ── STEPS ─────────────────────────────────────────────────────────────────────
+var currentStep = 0;
+
+function goToStep(n){
+  for(var i=0;i<=4;i++){
+    var el = document.getElementById('step'+i);
+    if(el) el.style.display = i===n ? 'block' : 'none';
+  }
+  currentStep = n;
+}
+
+function chooseExcelFlow(){
+  document.getElementById('excelInput').click();
+}
+
+function chooseManualFlow(){
+  goToStep(1);
 }
 
 var currentZoom = 0.9;
