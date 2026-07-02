@@ -691,6 +691,7 @@ function confirmClearDraft(){
   if(document.getElementById('banner')) document.getElementById('banner').value='Consulta con tu asesor de ventas la totalidad de nuestras coberturas y las novedades que tenemos para ti';
   buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
+goToStep(0);
 }
 
 function saveDraft(){
@@ -1223,6 +1224,7 @@ function applyHistoryEntry(entry){
   if(document.getElementById('banner')) document.getElementById('banner').value = entry.data.banner||'';
   buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
+goToStep(0);
 }
 
 // ── IMPORT MODAL ──────────────────────────────────────────────────────────────
@@ -1347,6 +1349,7 @@ function importExcel(input){
 
       buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
+goToStep(0);
       showToast('✅ Excel importado correctamente — ' + newCoverages.length + ' coberturas, ' + nPlans + ' plan(es)');
       goToStep(3);
       setTimeout(function(){ 
@@ -1427,6 +1430,7 @@ function changeZoom(delta){
 
 buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
 document.querySelectorAll('.ua-logo-img').forEach(function(img){ img.src = LOGO_DATA; });
+goToStep(0);
 
 // Check saved session
 window.addEventListener('load', function(){
