@@ -943,14 +943,6 @@ function _generatePDF(pdfFileName){
         doc.text('Página '+pg+' de '+totalPages, W/2, H-8, {align:'center'});
       }
     }
-    var totalPages = doc.getNumberOfPages();
-    if(totalPages > 1){
-      for(var pg=1;pg<=totalPages;pg++){
-        doc.setPage(pg);
-        doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(150,150,150);
-        doc.text('Página '+pg+' de '+totalPages, W/2, H-8, {align:'center'});
-      }
-    }
     doc.save(pdfFileName+'.pdf');
     if(loggedEmail) trackDownload(loggedEmail);
     if(btn){ btn.disabled=false; btn.innerHTML='&#11015; Descargar PDF'; }
@@ -1420,11 +1412,11 @@ function goToStep(n){
   for(var i=0;i<=4;i++){
     var badge = document.querySelector('#step'+i+' .step-badge');
     if(!badge) continue;
-    if(i > 0 && i < n){
+    if(i < n && i > 0){
       badge.textContent = '✅';
       badge.style.background = '#16a34a';
     } else {
-      badge.textContent = labels[i] !== undefined ? labels[i] : String(i);
+      badge.textContent = labels[i] || String(i);
       badge.style.background = '#0B1F3A';
     }
   }
