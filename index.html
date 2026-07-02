@@ -535,7 +535,7 @@ function buildCoverageRows(){
   }
   var s2=document.createElement('span'); s2.style.width='28px'; hdr.appendChild(s2);
   list.innerHTML='';
-  coverages.forEach((c,ci)=>{
+  coverages.forEach(function(c,ci){
     var row=document.createElement('div'); row.className='coverage-row';
     var ni=document.createElement('input'); ni.type='text'; ni.className='cov-name'; ni.value=c.name; ni.placeholder='Cobertura';
     ni.addEventListener('input',function(){ coverages[ci].name=ni.value; render(); });
@@ -848,7 +848,7 @@ function _generatePDF(pdfFileName){
 
     y=drawSubHeader(doc,y,W,margin,nameColW,colW);
 
-    coverages.forEach((c,ci)=>{
+    coverages.forEach(function(c,ci){
       doc.setFontSize(fontSize); doc.setFont('helvetica','normal');
       var nameLines=doc.splitTextToSize(cleanName(c.name),nameColW-8);
       var maxVLines=1;
@@ -910,7 +910,7 @@ function _generatePDF(pdfFileName){
 
     if(features.length>0){
       var fw=(W-margin*2-8*(features.length-1))/features.length;
-      features.forEach((f,i)=>{
+      features.forEach(function(f,i){
         var fx=margin+i*(fw+8);
         doc.setFillColor(245,248,252); doc.setDrawColor(215,225,238); doc.setLineWidth(0.5);
         doc.roundedRect(fx,y,fw,38,5,5,'FD');
@@ -968,7 +968,7 @@ function trackDownload(email){
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({email, fecha, hora}),
     mode:'no-cors'
-  }).catch(()=>{});
+  }).catch(function(){});
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
@@ -983,10 +983,10 @@ function closeAdmin(){
 function loadAdminData(){
   document.getElementById('adminContent').innerHTML = '<div class="admin-loading">Cargando datos...</div>';
   fetch(SHEETS_URL + '?action=get')
-    .then(r=>r.json())
+    .then(function(r){ return r.json(); })
     .then(function(data){
       renderAdmin(data);
-    }).catch(()=>{
+    }).catch(function(){
       document.getElementById('adminContent').innerHTML = '<div class="admin-loading">Error al cargar datos.</div>';
     });
 }
@@ -1003,7 +1003,7 @@ function renderAdmin(rows){
   document.getElementById('adminToday').textContent = todayCount;
   var sorted = Object.entries(userMap).sort(function(a,b){ return b[1]-a[1]; });
   var html = '<table class="admin-table"><thead><tr><th>Email</th><th>Descargas</th><th>Última descarga</th></tr></thead><tbody>';
-  sorted.forEach(([email, count])=>{
+  sorted.forEach(function(entry){ var email=entry[0]; var count=entry[1];
     var lastRow = data.filter(function(r){ return r[0]===email; }).pop();
     var last = lastRow ? lastRow[1]+' '+lastRow[2] : '—';
     html += '<tr><td>'+(email)+'</td><td style="font-weight:700;color:#0B1F3A">'+(count)+'</td><td>'+(last)+'</td></tr>';
@@ -1412,7 +1412,6 @@ function goToStep(n){
     }
   }
   currentStep = n;
-}
 }
 
 function showExcelFlow(){
