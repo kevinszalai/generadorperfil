@@ -927,6 +927,15 @@ function _generatePDF(pdfFileName){
     const bl=doc.splitTextToSize(banner,W-margin*2-20);
     doc.text(bl,W/2,y+10+(bl.length===1?4:0),{align:'center'});
 
+    // Add page numbers if more than 1 page
+    var totalPages = doc.getNumberOfPages();
+    if(totalPages > 1){
+      for(var pg=1;pg<=totalPages;pg++){
+        doc.setPage(pg);
+        doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(150,150,150);
+        doc.text('Página '+pg+' de '+totalPages, W/2, H-8, {align:'center'});
+      }
+    }
     doc.save(pdfFileName+'.pdf');
     if(loggedEmail) trackDownload(loggedEmail);
     if(btn){ btn.disabled=false; btn.innerHTML='&#11015; Descargar PDF'; }
