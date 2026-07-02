@@ -506,13 +506,13 @@ function cleanName(s){ return String(s).replace(/^[\d\s.\-\)\(]+/,'').trim(); }
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3500);
+  clearTimeout(t._t); t._t=setTimeout(function(){return (t.classList.remove('show'),3500);
 }
 
 // ── PLANS ──────────────────────────────────────────────────────
 function setPlans(n){
   numPlans=n;
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active',i===n-1); });
   buildPlanNames(); buildCoverageRows(); buildPasteButtons(); render();
 }
 
@@ -524,7 +524,7 @@ function buildPlanNames(){
     const div=document.createElement('div'); div.style.flex='1';
     const lbl=document.createElement('label'); lbl.textContent= numPlans===1 ? 'Nombre del plan' : 'Plan '+(i+1);
     const inp=document.createElement('input'); inp.type='text'; inp.value=planNames[i]; inp.placeholder='Plan'; inp.style.fontSize='12px';
-    inp.addEventListener('input',()=>{ planNames[i]=inp.value; buildPasteButtons(); render(); });
+    inp.addEventListener('input',function(){ planNames[i]=inp.value; buildPasteButtons(); render(); });
     div.appendChild(lbl); div.appendChild(inp); row.appendChild(div);
   }
   w.appendChild(row);
@@ -545,15 +545,15 @@ function buildCoverageRows(){
   coverages.forEach((c,ci)=>{
     const row=document.createElement('div'); row.className='coverage-row';
     const ni=document.createElement('input'); ni.type='text'; ni.className='cov-name'; ni.value=c.name; ni.placeholder='Cobertura';
-    ni.addEventListener('input',()=>{ coverages[ci].name=ni.value; render(); });
+    ni.addEventListener('input',function(){ coverages[ci].name=ni.value; render(); });
     row.appendChild(ni);
     for(let i=0;i<numPlans;i++){
       const vi=document.createElement('input'); vi.type='text'; vi.className='cov-val'; vi.value=c.vals[i]||''; vi.placeholder='Valor';
-      vi.addEventListener('input',()=>{ coverages[ci].vals[i]=vi.value; render(); });
+      vi.addEventListener('input',function(){ coverages[ci].vals[i]=vi.value; render(); });
       row.appendChild(vi);
     }
     const db=document.createElement('button'); db.className='del-btn'; db.innerHTML='&times;';
-    db.addEventListener('click',()=>removeCoverage(ci));
+    db.addEventListener('click',function(){ removeCoverage(ci); });
     row.appendChild(db); list.appendChild(row);
   });
 }
@@ -569,11 +569,11 @@ function buildPasteButtons(){
   const wrap=document.getElementById('pasteBtns'); if(!wrap) return;
   wrap.innerHTML='';
   const b0=document.createElement('button'); b0.className='paste-btn'; b0.textContent='📋 Coberturas';
-  b0.addEventListener('click',()=>openPasteModal(-1)); wrap.appendChild(b0);
+  b0.addEventListener('click',function(){ openPasteModal(-1); }); wrap.appendChild(b0);
   for(let i=0;i<numPlans;i++){
     const btn=document.createElement('button'); btn.className='paste-btn';
     btn.textContent='📋 Valores '+(planNames[i]||'Plan '+(i+1));
-    btn.addEventListener('click',()=>openPasteModal(i)); wrap.appendChild(btn);
+    btn.addEventListener('click',function(){ openPasteModal(i); }); wrap.appendChild(btn);
   }
 }
 
@@ -583,7 +583,7 @@ function openPasteModal(colIdx){
   document.getElementById('pasteTitle').textContent=title;
   document.getElementById('pasteArea').value='';
   document.getElementById('pasteOverlay').classList.add('open');
-  setTimeout(()=>document.getElementById('pasteArea').focus(),100);
+  setTimeout(function(){return (document.getElementById('pasteArea').focus(),100);
 }
 
 function closePasteModal(){ document.getElementById('pasteOverlay').classList.remove('open'); }
@@ -592,15 +592,15 @@ function applyPaste(){
   const text=document.getElementById('pasteArea').value;
   closePasteModal();
   if(!text.trim()) return;
-  const lines=text.split(/\r?\n/).map(l=>l.replace(/\t/g,' ').trim()).filter(l=>l!=='');
+  const lines=text.split(/\r?\n/).map(function(l){ return l.replace(/\t/g,' ').trim(); }).filter(function(l){ return l!==''; });
   if(!lines.length) return;
   if(currentPasteCol===-1){
     while(coverages.length<lines.length) coverages.push({name:'',vals:['','','','','','']});
-    lines.forEach((l,i)=>{ coverages[i].name=l; });
+    lines.forEach(function(l,i){ coverages[i].name=l; });
     coverages=coverages.slice(0,lines.length);
   } else {
     while(coverages.length<lines.length) coverages.push({name:'',vals:['','','','','','']});
-    lines.forEach((l,i)=>{ coverages[i].vals[currentPasteCol]=l; });
+    lines.forEach(function(l,i){ coverages[i].vals[currentPasteCol]=l; });
   }
   buildCoverageRows(); buildPasteButtons(); render();
 }
@@ -693,7 +693,7 @@ function confirmClearDraft(){
     {label:'Preexistencias', sub:'Amplia el tope en asistencia médica por preexistencias'},
     {label:'Cobertura frente a covid-19', sub:'Consulta las tarifas especiales'},
   ];
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active',i===0); });
   if(document.getElementById('footnote')) document.getElementById('footnote').value='';
   if(document.getElementById('banner')) document.getElementById('banner').value='Consulta con tu asesor de ventas la totalidad de nuestras coberturas y las novedades que tenemos para ti';
   buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons(); render();
@@ -720,7 +720,7 @@ function loadDraft(){
     if(draft.coverages && draft.coverages.length > 0) coverages = draft.coverages;
     if(draft.features && draft.features.length > 0) features = draft.features;
     // Update tabs
-    document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===numPlans-1));
+    document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active',i===numPlans-1); });
     buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons();
     if(draft.footnote && document.getElementById('footnote')) document.getElementById('footnote').value = draft.footnote;
     if(draft.banner && document.getElementById('banner')) document.getElementById('banner').value = draft.banner;
@@ -735,10 +735,10 @@ function render(){
   else for(let i=0;i<numPlans;i++) colHdr+=`<span class="pdf-col-header-val-c">${escH(planNames[i]||'Plan '+(i+1))}</span>`;
   const rows=coverages.map(c=>{
     const v=numPlans===1?`<span class="pdf-cov-val">${escH(c.vals[0]||'—')}</span>`:
-      Array.from({length:numPlans},(_,i)=>`<span class="pdf-cov-val-multi">${escH(c.vals[i]||'—')}</span>`).join('');
+      Array.from({length:numPlans},function(_,i){ return `<span class="pdf-cov-val-multi">${escH(c.vals[i]||'—')}</span>`).join('');
     return `<div class="pdf-cov-row"><span class="pdf-cov-name">${escH(cleanName(c.name))}</span>${v}</div>`;
   }).join('');
-  const icons=features.map(f=>`<div class="pdf-icon-card"><div class="pdf-icon-label">${escH(f.label)}</div><div class="pdf-icon-sub">${escH(f.sub)}</div></div>`).join('');
+  const icons=features.map(function(f){ return `<div class="pdf-icon-card"><div class="pdf-icon-label">${escH(f.label)}</div><div class="pdf-icon-sub">${escH(f.sub)}</div></div>`).join('');
   const headerRight=numPlans===1&&planNames[0]?`<div class="pdf-product-title">${escH(planNames[0])}</div>`:'';
   document.getElementById('pdfPreview').innerHTML=`
     <div class="pdf-header">
@@ -818,15 +818,15 @@ function downloadPDF(pdfName){
 function _generatePDF(pdfFileName){
   var btn = document.getElementById('downloadBtn');
   // Validate
-  if(!coverages.length||coverages.every(c=>c.name.trim()==='')){showToast('⚠️ Agregá al menos una cobertura');return;}
+  if(!coverages.length||coverages.every(function(c){ return c.name.trim()===''; })){showToast('⚠️ Agregá al menos una cobertura');return;}
   for(let i=0;i<coverages.length;i++) if(!coverages[i].name.trim()){showToast('⚠️ Hay coberturas vacías. Completalas o eliminalas');return;}
   for(let i=0;i<features.length;i++) if(!features[i].label.trim()||!features[i].sub.trim()){showToast(`⚠️ El Bloque ${i+1} tiene campos vacíos`);return;}
   const planInputs=document.querySelectorAll('#planNamesWrap input');
   let planOk=true;
-  planInputs.forEach(inp=>{if(!inp.value.trim()){inp.style.borderColor='#E8196E';setTimeout(()=>inp.style.borderColor='',3000);planOk=false;}});
+  planInputs.forEach(function(inp){ if(!inp.value.trim()){inp.style.borderColor='#E8196E';setTimeout(function(){return (inp.style.borderColor='',3000);planOk=false;}});
   if(!planOk){showToast('⚠️ Completá el nombre de todos los planes');return;}
   const footnote=document.getElementById('footnote').value.trim();
-  if(!footnote){const el=document.getElementById('footnote');el.style.borderColor='#E8196E';setTimeout(()=>el.style.borderColor='',3000);showToast('⚠️ El campo Legales es obligatorio');document.getElementById('footnote').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(!footnote){const el=document.getElementById('footnote');el.style.borderColor='#E8196E';setTimeout(function(){return (el.style.borderColor='',3000);showToast('⚠️ El campo Legales es obligatorio');document.getElementById('footnote').scrollIntoView({behavior:'smooth',block:'center'});return;}
 
   try {
     const {jsPDF}=window.jspdf;
@@ -957,9 +957,9 @@ function _generatePDF(pdfFileName){
 const resizer=document.getElementById('resizer');
 const sidebar=document.querySelector('.sidebar');
 let isResizing=false, startX=0, startW=0;
-resizer.addEventListener('mousedown',e=>{isResizing=true;startX=e.clientX;startW=sidebar.offsetWidth;document.body.style.cursor='col-resize';document.body.style.userSelect='none';});
-document.addEventListener('mousemove',e=>{if(!isResizing)return;sidebar.style.width=Math.min(700,Math.max(200,startW+(e.clientX-startX)))+'px';});
-document.addEventListener('mouseup',()=>{isResizing=false;document.body.style.cursor='';document.body.style.userSelect='';});
+resizer.addEventListener('mousedown',function(e){isResizing=true;startX=e.clientX;startW=sidebar.offsetWidth;document.body.style.cursor='col-resize';document.body.style.userSelect='none';});
+document.addEventListener('mousemove',function(e){if(!isResizing)return;sidebar.style.width=Math.min(700,Math.max(200,startW+(e.clientX-startX)))+'px';});
+document.addEventListener('mouseup',function(){isResizing=false;document.body.style.cursor='';document.body.style.userSelect='';});
 
 // ── INIT ──────────────────────────────────────────────────────
 // ── TRACKING ─────────────────────────────────────────────────────────────────
@@ -1003,7 +1003,7 @@ function renderAdmin(rows){
   if(!rows || rows.length <= 1){ document.getElementById('adminContent').innerHTML='<div class="admin-loading">Sin registros aún.</div>'; return; }
   const data = rows.slice(1); // skip header
   const today = new Date().toLocaleDateString('es-AR');
-  const todayCount = data.filter(r=>r[1]===today).length;
+  const todayCount = data.filter(function(r){ return r[1]===today; }).length;
   const userMap = {};
   data.forEach(r=>{ const e=r[0]||''; userMap[e]=(userMap[e]||0)+1; });
   document.getElementById('adminTotal').textContent = data.length;
@@ -1012,7 +1012,7 @@ function renderAdmin(rows){
   const sorted = Object.entries(userMap).sort((a,b)=>b[1]-a[1]);
   let html = '<table class="admin-table"><thead><tr><th>Email</th><th>Descargas</th><th>Última descarga</th></tr></thead><tbody>';
   sorted.forEach(([email, count])=>{
-    const lastRow = data.filter(r=>r[0]===email).pop();
+    const lastRow = data.filter(function(r){ return r[0]===email; }).pop();
     const last = lastRow ? lastRow[1]+' '+lastRow[2] : '—';
     html += `<tr><td>${email}</td><td style="font-weight:700;color:#0B1F3A">${count}</td><td>${last}</td></tr>`;
   });
@@ -1041,7 +1041,7 @@ function sendCode(){
   if(!email.endsWith('@'+ALLOWED_DOMAIN) && email !== PERSONAL_EXCEPTION){
     errEl.textContent = 'Ingresá tu email corporativo @universal-assistance.com';
     document.getElementById('loginEmail').style.borderColor = '#E8196E';
-    setTimeout(()=>document.getElementById('loginEmail').style.borderColor='', 3000);
+    setTimeout(function(){return (document.getElementById('loginEmail').style.borderColor='', 3000);
     return;
   }
   const btn = document.getElementById('sendCodeBtn');
@@ -1060,7 +1060,7 @@ function sendCode(){
     document.getElementById('stepEmail').style.display = 'none';
     document.getElementById('stepCode').style.display = 'block';
     document.getElementById('codeEmailDisplay').textContent = email;
-    document.querySelectorAll('.code-box').forEach(b=>b.value='');
+    document.querySelectorAll('.code-box').forEach(function(b){ b.value=''; });
     document.querySelectorAll('.code-box')[0].focus();
     // Auto-advance between boxes
     document.querySelectorAll('.code-box').forEach(function(box, i, boxes){
@@ -1364,7 +1364,7 @@ function importExcel(input){
       numPlans = nPlans;
       planNames = newPlanNames;
       coverages = newCoverages;
-      document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===nPlans-1));
+      document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active',i===nPlans-1); });
       if(newFootnote && document.getElementById('footnote')){
         var existing = document.getElementById('footnote').value.trim();
         document.getElementById('footnote').value = existing ? existing + ' ' + newFootnote : newFootnote;
