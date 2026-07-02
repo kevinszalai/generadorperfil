@@ -210,18 +210,18 @@ textarea{resize:none}
     <div class="onboard-steps">
       <div class="onboard-step">
         <div class="step-num">1</div>
-        <div class="step-title">Elegí los planes</div>
-        <div class="step-desc">Seleccioná cuántos planes tiene el producto y poneles un nombre</div>
+        <div class="step-title">Elegí cómo empezar</div>
+        <div class="step-desc">Importá desde Excel o cargá los datos manualmente paso a paso</div>
       </div>
       <div class="onboard-step">
         <div class="step-num">2</div>
-        <div class="step-title">Cargá las coberturas</div>
-        <div class="step-desc">Importá desde Excel o pegá las coberturas columna por columna</div>
+        <div class="step-title">Completá los datos</div>
+        <div class="step-desc">Planes, coberturas, destacados y legales</div>
       </div>
       <div class="onboard-step">
         <div class="step-num">3</div>
         <div class="step-title">Descargá el PDF</div>
-        <div class="step-desc">Completá los legales y descargá el perfil listo para compartir</div>
+        <div class="step-desc">Tu perfil de cobertura listo para compartir</div>
       </div>
     </div>
     <button class="onboard-ok" onclick="closeOnboard()">¡Entendido!</button>
@@ -718,7 +718,6 @@ function loadDraft(){
     buildPlanNames(); buildCoverageRows(); buildFeatureRows(); buildPasteButtons();
     if(draft.footnote && document.getElementById('footnote')) document.getElementById('footnote').value = draft.footnote;
     if(draft.banner && document.getElementById('banner')) document.getElementById('banner').value = draft.banner;
-    goToStep(1);
   } catch(e){}
 }
 
@@ -1386,6 +1385,7 @@ function goToStep(n){
     if(el) el.style.display = i===n ? 'block' : 'none';
   }
   currentStep = n;
+
 }
 
 function showExcelFlow(){
@@ -1413,6 +1413,7 @@ function chooseExcelFlow(){
 }
 
 function chooseManualFlow(){
+  loadDraft();
   goToStep(1);
 }
 
