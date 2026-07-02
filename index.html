@@ -1113,15 +1113,29 @@ document.getElementById('loginEmail').addEventListener('keydown', function(e){ i
 // loginCode replaced by code boxes
 
 // ── PDF NAME MODAL ────────────────────────────────────────────────────────────
+function highlightStep(n){
+  goToStep(n);
+  var block = document.getElementById('step'+n);
+  if(block){ block.style.outline='2px solid #E8196E'; setTimeout(function(){ block.style.outline=''; },3000); }
+}
+
 function openNameModal(){
-  // Validate first
-  if(!coverages.length||coverages.every(function(c){ return c.name.trim()===''; })){showToast('⚠️ Agregá al menos una cobertura');return;}
+  if(!coverages.length||coverages.every(function(c){ return c.name.trim()===''; })){
+    showToast('⚠️ Paso 2: Agregá al menos una cobertura');
+    highlightStep(2); return;
+  }
   var footnote=document.getElementById('footnote').value.trim();
-  if(!footnote){var el=document.getElementById('footnote');el.style.borderColor='#E8196E';setTimeout(function(){el.style.borderColor='';},3000);showToast('⚠️ El campo Legales es obligatorio');document.getElementById('footnote').scrollIntoView({behavior:'smooth',block:'center'});return;}
-  // Suggest name from first plan
+  if(!footnote){
+    var el=document.getElementById('footnote');
+    el.style.borderColor='#E8196E';
+    setTimeout(function(){el.style.borderColor='';},3000);
+    showToast('⚠️ Paso 4: El campo Legales es obligatorio');
+    highlightStep(4); return;
+  }
   document.getElementById('pdfNameInput').value = 'UA Perfiles';
   document.getElementById('nameModal').classList.add('open');
   setTimeout(function(){ document.getElementById('pdfNameInput').select(); }, 100);
+}
 }
 
 function closeNameModal(){
@@ -1389,8 +1403,20 @@ function goToStep(n){
     var el = document.getElementById('step'+i);
     if(el) el.style.display = i===n ? 'block' : 'none';
   }
+  var labels = ['🚀','1','2','3','4'];
+  for(var i=0;i<=4;i++){
+    var badge = document.querySelector('#step'+i+' .step-badge');
+    if(!badge) continue;
+    if(i < n && i > 0){
+      badge.textContent = '✅';
+      badge.style.background = '#16a34a';
+    } else {
+      badge.textContent = labels[i] || String(i);
+      badge.style.background = '#0B1F3A';
+    }
+  }
   currentStep = n;
-
+}
 }
 
 function showExcelFlow(){
